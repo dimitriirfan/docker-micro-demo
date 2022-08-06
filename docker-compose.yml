@@ -1,0 +1,15 @@
+version: '3'
+
+services: 
+  product-service:
+    build:
+      context: ./product-service
+      dockerfile: ./dockerfile
+    restart: always
+    volumes:
+      - ./product-service:/usr/src/app
+    ports: 
+      - "8001:5000"
+    deploy: 
+      mode: replicated
+      replicas: 1

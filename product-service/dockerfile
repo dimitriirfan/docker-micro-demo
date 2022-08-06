@@ -1,0 +1,41 @@
+# syntax=docker/dockerfile:1
+
+FROM golang:1.18-alpine as builder
+
+WORKDIR /user/src/app
+
+COPY . ./
+
+RUN go build -o /docker-product-service-app
+
+## dep
+FROM alpine:latest
+
+WORKDIR /
+
+COPY --from=builder /docker-product-service-app /docker-product-service-app
+
+ENTRYPOINT [ "/docker-product-service-app" ]
+
+
+# RUN mkdir /user/src/app
+
+# COPY . /user/src/app
+
+
+# RUN CGO_ENABLED=0 go build -o productApp main.go
+
+# RUN chmod +x /app/productApp
+
+# CMD ["./productApp"]
+
+# # FROM alpine:latest
+
+# # RUN mkdir /app
+
+# # COPY --from=builder /app/productApp /app
+
+# # CMD ["/app/productApp"]
+
+
+
