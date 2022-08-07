@@ -9,7 +9,25 @@ services:
     volumes:
       - ./product-service:/usr/src/app
     ports: 
-      - "8001:5000"
+      - "5000:5000"
     deploy: 
       mode: replicated
       replicas: 1
+    environment:
+      POSTGRES_HOST: product-postgres
+      POSTGRES_USER: product
+      POSTGRES_PASSWORD: product
+      POSTGRES_DB: product
+    links:
+      - product-postgres
+  product-postgres:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: product
+      POSTGRES_PASSWORD: product
+      POSTGRES_DB: product
+    restart: always
+
+
