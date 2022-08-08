@@ -18,7 +18,7 @@ services:
       POSTGRES_USER: product
       POSTGRES_PASSWORD: product
       POSTGRES_DB: product
-    links:
+    depends_on:
       - product-postgres
   product-postgres:
     image: postgres:latest

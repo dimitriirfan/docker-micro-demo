@@ -8,11 +8,11 @@ import (
 	"os"
 	"os/signal"
 	"product-service/api/v1/handler"
+	"product-service/api/v1/product"
+	"product-service/db"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
 const PORT = "5000"
@@ -32,14 +32,7 @@ func main() {
 
 	router.Use(CustomServiceLog(logger))
 
-	dsn := fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=5432 sslmode=disable TimeZone=Asia/Shanghai",
-		os.Getenv("POSTGRES_HOST"),
-		os.Getenv("POSTGRES_USER"),
-		os.Getenv("POSTGRES_PASSWORD"),
-		os.Getenv("POSTGRES_DB"),
-	)
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := db.Init()
 
 	if err != nil {
 		log.Fatal(err)
@@ -47,7 +40,9 @@ func main() {
 
 	fmt.Println(db)
 
-	productHandler := handler.NewProductHandler(logger)
+	productRepository := product.NewRepository(db)
+	productService := product.NewService(productRepository)
+	productHandler := handler.NewProductHandler(logger, productService)
 
 	// routing
 	apiV1 := router.Group("/api/v1/")
